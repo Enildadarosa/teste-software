@@ -21,16 +21,68 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 import static org.testng.Assert.assertEquals;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 /**
+ * *****************************************************************************
  *
  * @author Enilda Aparecida Mendes da Rosa Caceres
+ *
+ * *******************************INSTRUÇÕES************************************
+ *
+ * Foram gerados sete métodos para realização dos testes descritos. Para cada
+ * caso de teste descrito, foi implementado um método em Java Nativo e outro
+ * utilizando a classe JsonPath.
+ *
+ * Foi definido um vetor com os valores que serão utilizados nos assert do
+ * métodos de teste. Esse vetor é inicializado antes do inicio da execução dos
+ * testes, no método init.
+ *
+ * Para a realização dos testes, não é necessário cadastrar manualemnte os dados
+ * na API, para isso, o método geraLancamentosRandomicos é executado em cada
+ * caso de teste com os valore informados no vetor.
+ *
+ * Caso desejar usar a base já cadastrada, comentar os métodos:
+ * limparBaseDeDados(); geraLancamentosRandomicos();
+ *
+ * e adequar os parâmetros dos asserts
+ *
+ * ***************************CONCLUSÃO*****************************************
+ *
+ * Nos casos de testes implementados em Java, ao realizar a comparação entre
+ * valores com duas casas decimais (850.52) percebe-se que o BigDecimal possui
+ * dízima periódica (850.51999999999998181010596454143524169921875) dessa forma
+ * o caso de teste falha durante a execução.
+ *
+ * Além do mais, no Java é necessário codificar o método que realiza a tarefa,
+ * enquanto que utilizando o JsonPath, essa tarefa fica a cargo da classe.
+ *
+ * Dessa forma, recomenda-se a utilização do JsonPath para esse tipo de teste.
+ *
+ * *****************************************************************************
  */
 public class LancamentoControllerTest {
 
-    float valorMinimoCadastrado;
+    BigDecimal[] valores = new BigDecimal[6];
 
+    public static final int SIZE_ONE = 1;
+    public static final int SIZE_TWO = 2;
+    public static final int SIZE_SIX = 6;
+
+    @BeforeTest
+    public void init() {
+        valores[0] = new BigDecimal(850.50);  // Configurado no assert para ser o menor valor da lista = 1
+        valores[1] = new BigDecimal(700.50);  // Configurado no assert para ser o menor valor da lista = 2
+        valores[2] = new BigDecimal(500.60);
+        valores[3] = new BigDecimal(500.34);  // Configurado no assert para ser o menor valor da lista > 5
+        valores[4] = new BigDecimal(500.50);
+        valores[5] = new BigDecimal(900.70);
+    }
+
+    /**
+     * Verifica a conexão com o servidor
+     */
     @Test
     public void pingTestBasico() {
         given().when()
@@ -39,13 +91,16 @@ public class LancamentoControllerTest {
                 .statusCode(200);
     }
 
+    /**
+     * CASO DE TESTE 01 - JAVA
+     *
+     * Encontrar o menor valor da lista de tamanho UM usando o cógido Java
+     */
     @Test
     public void valorMininoNaListaDeTamanhoUmJava() {
-        BigDecimal[] valores = new BigDecimal[1];
-        valores[0] = new BigDecimal(50.50);
 
         limparBaseDeDados();
-        geraLancamentosRandomicos(1, valores);
+        geraLancamentosRandomicos(SIZE_ONE, valores);
 
         InputStream in = getInputStreamDeLancamentosViaPost();
 
@@ -53,69 +108,76 @@ public class LancamentoControllerTest {
                 .getList("lancamentos", Lancamento.class);
 
         BigDecimal menor = getMenorValorDaListaEmJava(lancamentos);
+        System.out.println(menor);
+        System.out.println(valores[0]);
         assertEquals(menor.compareTo(valores[0]), 0);
     }
 
+    /**
+     * CASO DE TESTE 01 - JsonPath
+     *
+     * Encontrar o menor valor da lista de tamanho UM usando o jsonPath
+     */
     @Test
     public void valorMininoNaListaDeTamanhoUmJsonPath() {
-        BigDecimal[] valores = new BigDecimal[1];
-        valores[0] = new BigDecimal(50.50);
 
         limparBaseDeDados();
-        geraLancamentosRandomicos(1, valores);
-        InputStream in = getInputStreamDeLancamentosViaPost();
-
-        BigDecimal menor = getMenorValorDaListaJsonPath(in);
-
-        assertEquals(menor.compareTo(valores[0]), 0);
-    }
-
-    @Test
-    public void valorMininoNaListaDeTamanhoDoisJava() {
-        BigDecimal[] valores = new BigDecimal[2];
-        valores[0] = new BigDecimal(65.50);
-        valores[1] = new BigDecimal(45.50);
-
-        limparBaseDeDados();
-        geraLancamentosRandomicos(2, valores);
-
-        InputStream in = getInputStreamDeLancamentosViaPost();
-
-        List<Lancamento> lancamentos = JsonPath.with(in)
-                .getList("lancamentos", Lancamento.class);
-
-        BigDecimal menor = getMenorValorDaListaEmJava(lancamentos);
-
-        assertEquals(menor.compareTo(valores[1]), 0);
-    }
-
-    @Test
-    public void valorMininoNaListaDeTamanhoDoisJsonPath() {
-        BigDecimal[] valores = new BigDecimal[2];
-        valores[0] = new BigDecimal(65.50);
-        valores[1] = new BigDecimal(45.50);
-
-        limparBaseDeDados();
-        geraLancamentosRandomicos(2, valores);
+        geraLancamentosRandomicos(SIZE_ONE, valores);
         InputStream in = getInputStreamDeLancamentosViaPost();
 
         BigDecimal menor = getMenorValorDaListaJsonPath(in);
         System.out.println(menor);
+        System.out.println(valores[0]);
+        assertEquals(menor.compareTo(valores[0]), 0);
+    }
+
+    /**
+     * CASO DE TESTE 02 - JAVA
+     *
+     * Encontrar o menor valor da lista de tamanho DOIS usando JAVA
+     */
+    @Test
+    public void valorMininoNaListaDeTamanhoDoisJava() {
+
+        limparBaseDeDados();
+        geraLancamentosRandomicos(SIZE_TWO, valores);
+
+        InputStream in = getInputStreamDeLancamentosViaPost();
+
+        List<Lancamento> lancamentos = JsonPath.with(in)
+                .getList("lancamentos", Lancamento.class);
+
+        BigDecimal menor = getMenorValorDaListaEmJava(lancamentos);
+
         assertEquals(menor.compareTo(valores[1]), 0);
     }
 
+    /**
+     * CASO DE TESTE 02 - JsonPath
+     *
+     * Encontrar o menor valor da lista de tamanho DOIS usando JsonPath
+     */
     @Test
-    public void valorMininoNaListaDeTamanhoMaiorQueCincoJava() {
-        BigDecimal[] valores = new BigDecimal[6];
-        valores[0] = new BigDecimal(65.50);
-        valores[1] = new BigDecimal(700.50);
-        valores[2] = new BigDecimal(500.55);
-        valores[3] = new BigDecimal(10.50);
-        valores[4] = new BigDecimal(10.50);
-        valores[5] = new BigDecimal(45.50);
+    public void valorMininoNaListaDeTamanhoDoisJsonPath() {
 
         limparBaseDeDados();
-        geraLancamentosRandomicos(6, valores);
+        geraLancamentosRandomicos(SIZE_TWO, valores);
+        InputStream in = getInputStreamDeLancamentosViaPost();
+
+        BigDecimal menor = getMenorValorDaListaJsonPath(in);
+        //System.out.println("Aqui" + menor);
+        assertEquals(menor.compareTo(valores[1]), 0);
+    }
+
+    /**
+     * CASO DE TESTE 03 - JAVA
+     *
+     * Encontrar o menor valor da lista de tamanho MAIOR QUE CINCO usando JAVA
+     */
+    @Test
+    public void valorMininoNaListaDeTamanhoMaiorQueCincoJava() {
+        limparBaseDeDados();
+        geraLancamentosRandomicos(SIZE_SIX, valores);
 
         InputStream in = getInputStreamDeLancamentosViaPost();
 
@@ -127,31 +189,28 @@ public class LancamentoControllerTest {
 
     }
 
+    /**
+     * CASO DE TESTE 03 - JsonPath
+     *
+     * Encontrar o menor valor da lista de tamanho MAIOR QUE CINCO usando
+     * JsonPath
+     */
     @Test
     public void valorMininoNaListaDeTamanhoMaiorQueCincoJsonPath() {
-        BigDecimal[] valores = new BigDecimal[6];
-        valores[0] = new BigDecimal(65.50);
-        valores[1] = new BigDecimal(700.50);
-        valores[2] = new BigDecimal(500.55);
-        valores[3] = new BigDecimal(10.50);
-        valores[4] = new BigDecimal(10.50);
-        valores[5] = new BigDecimal(45.50);
 
         limparBaseDeDados();
-        geraLancamentosRandomicos(6, valores);
+        geraLancamentosRandomicos(SIZE_SIX, valores);
         InputStream in = getInputStreamDeLancamentosViaPost();
 
         BigDecimal menor = getMenorValorDaListaJsonPath(in);
-        System.out.println(menor);
+        //System.out.println(menor);
         assertEquals(menor.compareTo(valores[3]), 0);
     }
 
     /**
-     * ***************************CONCLUSÃO************************************
+     * Método que retorna o menor valor de uma lista de lançamentos
      *
-     *
-     *
-     **************************************************************************
+     * @param Lista de lançamentos
      */
     public BigDecimal getMenorValorDaListaEmJava(List<Lancamento> lancamentos) {
         BigDecimal menor = lancamentos.get(0).getValor();
@@ -164,14 +223,20 @@ public class LancamentoControllerTest {
         return menor;
     }
 
+    /**
+     * Método que retorna o menor valor de uma lista utilizando a classe
+     * JsonPath
+     *
+     * @param InputStream recebido da requisição
+     */
     public BigDecimal getMenorValorDaListaJsonPath(InputStream in) {
         String valor = JsonPath.with(in).getString("lancamentos.min{it.valor}.valor");
         double dinheiro = new StringToMoneyConverter().convert(valor).doubleValue();
         return new BigDecimal(dinheiro);
     }
 
-    /*
-    *   Funcao utilizada para garantir que a base de dados está vazia
+    /**
+     * Função utilizada para garantir que a base de dados está vazia
      */
     public void limparBaseDeDados() {
         Response response = given()
@@ -221,7 +286,7 @@ public class LancamentoControllerTest {
 
     /*   
     *   Posta via requisição  REST
-    *   @param Lista de 
+    *   @param Lista de lancamentos
      */
     public void postLancamento(Lancamento lancamento) {
         Response response = given().when()
@@ -235,6 +300,10 @@ public class LancamentoControllerTest {
         assertEquals(response.getStatusCode(), 302);
     }
 
+    /**
+     * Função utilizada para fazer uma requisição via POST na API, receber a
+     * resposta e retornar um InputStream como resultado
+     */
     public InputStream getInputStreamDeLancamentosViaPost() {
         Response response = given()
                 .when()
