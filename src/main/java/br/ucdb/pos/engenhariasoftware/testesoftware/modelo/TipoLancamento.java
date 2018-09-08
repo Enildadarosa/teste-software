@@ -7,8 +7,8 @@ public enum TipoLancamento {
 
 	@JsonProperty("Entrada")
 	ENTRADA("Entrada"),
-	@JsonProperty("Saída")
-	SAIDA("Saída");
+	@JsonProperty("Saida")
+	SAIDA("Saida");
 	
 	private TipoLancamento(String tipo){
 		this.tipo = tipo;

@@ -5,18 +5,18 @@ import lombok.Getter;
 
 public enum Categoria {
 
-    @JsonProperty("Alimentação")
-    ALIMENTACAO("Alimentação"),
-    @JsonProperty("Salário")
-    SALARIO("Salário"),
+    @JsonProperty("Alimentacao")
+    ALIMENTACAO("Alimentacao"),
+    @JsonProperty("Salario")
+    SALARIO("Salario"),
     @JsonProperty("Lazer")
     LAZER("Lazer"),
-    @JsonProperty("Telefone & Internet")
-    TELEFONE_INTERNET("Telefone & Internet"),
+    @JsonProperty("Telefone e Internet")
+    TELEFONE_INTERNET("Telefone e Internet"),
     @JsonProperty("Carro")
     CARRO("Carro"),
-    @JsonProperty("Empréstimo")
-    EMPRESTIMO("Empréstimo"),
+    @JsonProperty("Emprestimo")
+    EMPRESTIMO("Emprestimo"),
     @JsonProperty("Investimentos")
     INVESTIMENTOS("Investimentos"),
     @JsonProperty("Outros")
