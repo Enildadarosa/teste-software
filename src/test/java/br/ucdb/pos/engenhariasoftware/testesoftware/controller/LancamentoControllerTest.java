@@ -75,12 +75,12 @@ public class LancamentoControllerTest {
 
     @BeforeTest
     public void init() {
-        valores[0] = new BigDecimal(850.50);  // Configurado no assert para ser o menor valor da lista = 1
-        valores[1] = new BigDecimal(700.50);  // Configurado no assert para ser o menor valor da lista = 2
-        valores[2] = new BigDecimal(500.60);
-        valores[3] = new BigDecimal(500.00);  // Configurado no assert para ser o menor valor da lista > 5
-        valores[4] = new BigDecimal(500.00);
-        valores[5] = new BigDecimal(900.70);
+        valores[0] = new BigDecimal(800.50);  // Configurado no assert para ser o menor valor da lista = 1
+        valores[1] = new BigDecimal(750.50);  // Configurado no assert para ser o menor valor da lista = 2
+        valores[2] = new BigDecimal(550.60);
+        valores[3] = new BigDecimal(450.00);  // Configurado no assert para ser o menor valor da lista > 5
+        valores[4] = new BigDecimal(450.00);
+        valores[5] = new BigDecimal(900.71);
     }
 
     /**
